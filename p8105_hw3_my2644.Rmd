@@ -89,6 +89,36 @@ instacart %>%
   )
   
 ```
+###Problem 2
 
+1. Load, tidy, and otherwise wrangle the data. Your final dataset should include all originally observed variables and values; have useful variable names; include a weekday vs weekend variable; and encode data with reasonable variable classes. Describe the resulting dataset (e.g. what variables exist, how many observations, etc).
+
+```{r}
+accel_df=read_csv("./data/accel_data.csv") %>% 
+janitor::clean_names() %>%
+ 
+pivot_longer(activity_1:activity_1440,
+             names_to = "min_of_day",
+             names_prefix = "activity_",
+             values_to = "activity_count") %>% 
+  
+  mutate(
+         day=as.factor(day),
+         activity_count=as.numeric(activity_count),
+  min_of_day=as.numeric(min_of_day),
+  day_id=as.numeric(day_id),
+  week=as.numeric(week)
+  ) %>% 
+  
+  
+  mutate(weekdays_vs_weekend = case_when(
+           day  %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday") ~ "Weekdays",
+          day  %in% c("Saturday", "Sunday") ~ "Weekend")) %>% 
+
+ knitr::kable()
+```
+The dataframe accel_df contains `r nrow(accel_df)` observations and `r ncol(accel_df)` columns. Variables include week, day_id, day, min_of_day, activity_count, and weekdays_vs_weekend.
+
+Aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals.
 
 
