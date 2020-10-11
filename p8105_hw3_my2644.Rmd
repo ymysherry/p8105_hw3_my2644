@@ -128,7 +128,14 @@ The dataframe accel_df contains `r nrow(accel_df)` observations and `r ncol(acce
 2. Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?
 ```{r}
 accel_df %>%  
- mutate(day_of_wk = forcats::fct_relevel(day_of_wk, c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))) %>% 
+  mutate(
+         day_of_wk=as.factor(day_of_wk),
+         activity_count=as.numeric(activity_count),
+  min_of_day=as.numeric(min_of_day),
+  day_id=as.numeric(day_id),
+  week=as.numeric(week)
+  ) %>% 
+   mutate(day_of_wk = forcats::fct_relevel(day_of_wk, c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))) %>% 
     
   group_by(week, day_of_wk, weekdays_vs_weekend) %>%
   summarise(total_daily_activity = sum(activity_count)) %>%
@@ -151,5 +158,39 @@ accel_df %>%
     caption = "Accelerometer Data collected on a 63 year-old male with BMI 25, who was admitted to the Advanced Cardiac Care Center of Columbia University Medical Center and diagnosed with congestive heart failure (CHF), during a five weeks of observation period. "
   )
 ```
-From the plot we can notice that the male study object has more activities at noon and night during each day of the week, especially on the Friday and Sunday. During weekdays the activity counts are more stable throughout the day. Activity counts are lower during the Saturdays of each week
+From the plot we can notice that the male study object has more activities at noon and night during each day of the week, especially on the Friday and Sunday. During weekdays the activity counts are more stable throughout the day. Activity counts are lower during the Saturdays of each week.
+
+
+###Problem 3
+1. load dataset.Do some data cleaning. Create separate variables for year, month, and day. Ensure observations for temperature, precipitation, and snowfall are given in reasonable units. For snowfall, what are the most commonly observed values? Why?
+
+```{r}
+data("ny_noaa")
+nycweather_df = 
+  ny_noaa %>%
+  mutate(
+    ny_noaa,
+    prcp = prcp/10,
+    tmax = as.numeric(tmax)/10,
+    tmin = as.numeric(tmin)/10
+  ) %>%
+  janitor::clean_names() %>%
+  drop_na() %>%
+  separate(date, c("year", "month", "day")) %>% 
+  mutate(
+    year = as.integer(year),
+    month = month.name[as.integer(month)],
+    day = as.integer(day)
+    ) 
+  
+skimr::skim(nycweather_df)
+```
+This dataset cellects the data of weather conditions from all  monitoning stations in NY, during January 1, 1981 through December 31, 2010.  It contains `r nrow(nycweather_df)` rows and `r ncol(nycweather_df)` columns. There are 9 Variables, which include year, month, day, prcp (precipitation (mm)), snow (snowfall (mm)), snwd (snow depth (mm)), tmax (maximum temperature (degrees Celcius)), and tmin (minimum temperature (degrees Celcius)). The original dataset contains `r nrow(ny_noaa)` observations, and `r nrow(ny_noaa) - nrow(nyweather)` , Observations with missing data were removed from the original dataset. 
+
+2. Make a two-panel plot showing the average max temperature in January and in July in each station across years. Is there any observable / interpretable structure? Any outliers?
+
+
+
+
+3. Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
 
