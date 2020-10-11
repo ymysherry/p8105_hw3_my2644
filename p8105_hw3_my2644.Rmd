@@ -186,7 +186,7 @@ nycweather_df =
   
 skimr::skim(nycweather_df)
 ```
-This dataset cellects the data of weather conditions from all  monitoning stations in NY, during January 1, 1981 through December 31, 2010.  It contains `r nrow(nycweather_df)` rows and `r ncol(nycweather_df)` columns. There are 9 Variables, which include year, month, day, prcp (precipitation (mm)), snow (snowfall (mm)), snwd (snow depth (mm)), tmax (maximum temperature (degrees Celcius)), and tmin (minimum temperature (degrees Celcius)). The original dataset contains `r nrow(ny_noaa)` observations, and `r nrow(ny_noaa) - nrow(nycweather_df)` , Observations with missing data were removed from the original dataset. 
+This dataset collects the data of weather conditions from all  monitoning stations in NY, during January 1, 1981 through December 31, 2010.  It contains `r nrow(nycweather_df)` rows and `r ncol(nycweather_df)` columns. There are 9 Variables, which include year, month, day, prcp (precipitation (mm)), snow (snowfall (mm)), snwd (snow depth (mm)), tmax (maximum temperature (degrees Celcius)), and tmin (minimum temperature (degrees Celcius)). The original dataset contains `r nrow(ny_noaa)` observations, and `r nrow(ny_noaa) - nrow(nycweather_df)` , Observations with missing data were removed from the original dataset. 
 ```{r}
 nycweather_df %>%
   count(snow) %>%
@@ -208,9 +208,41 @@ nycweather_df %>%
   geom_smooth(se = FALSE) + 
   theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
   labs(y = "Average maximum temperature (degree Celcius)")
+
 ```
 The average maximum temperature in July is significantly higher than that in January across years. The distribution of max temperature is larger in January than in July, with more outliers of extremely low tempetaure arouud -10 to -15 degrees. In comparison, July has 1 outlier in the lower range around 15 degrees.
 
 
 3. Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
+```{r}
+t_maxmin_p = 
+  nycweather_df %>%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_bin2d() +
+  labs(
+    title = "tmax vs tmin",
+    caption = "Data retrieved from the ny_noaa dataset from all  monitoning stations in NY, during January 1, 1981 through December 31, 2010."
+  )
+ggsave("t_maxmin_plot.pdf", t_maxmin_p, width = 8, height = 5)
+
+snowfall_p = 
+  nycweather_df %>%
+  filter(snow > 0 & snow < 100) %>%
+  ggplot(aes(x = year, y = snow)) +
+  geom_boxplot() +  
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  labs(
+  title = "Snowfall Distribution",
+  caption = "Data from the ny_noaa dataset from all  monitoning stations in NY, during January 1, 1981 through December 31, 2010."
+  )
+ggsave("snowfall.pdf", snowfall_p, width = 8, height = 5)
+
+```
+```{r}
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+```
 
