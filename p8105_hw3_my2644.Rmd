@@ -115,9 +115,10 @@ pivot_longer(activity_1:activity_1440,
            day  %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday") ~ "Weekdays",
           day  %in% c("Saturday", "Sunday") ~ "Weekend")) %>% 
 
-  select(week, weekdays_vs_weekend, day_id, day_of_wk=day,everything()) %>% 
+  select(week, weekdays_vs_weekend, day_id, day_of_wk=day,everything()) 
 
-   
+   cols(.default = col_double(),
+        day=col_character())
 
 
 
@@ -185,7 +186,7 @@ nycweather_df =
   
 skimr::skim(nycweather_df)
 ```
-This dataset cellects the data of weather conditions from all  monitoning stations in NY, during January 1, 1981 through December 31, 2010.  It contains `r nrow(nycweather_df)` rows and `r ncol(nycweather_df)` columns. There are 9 Variables, which include year, month, day, prcp (precipitation (mm)), snow (snowfall (mm)), snwd (snow depth (mm)), tmax (maximum temperature (degrees Celcius)), and tmin (minimum temperature (degrees Celcius)). The original dataset contains `r nrow(ny_noaa)` observations, and `r nrow(ny_noaa) - nrow(nyweather)` , Observations with missing data were removed from the original dataset. 
+This dataset cellects the data of weather conditions from all  monitoning stations in NY, during January 1, 1981 through December 31, 2010.  It contains `r nrow(nycweather_df)` rows and `r ncol(nycweather_df)` columns. There are 9 Variables, which include year, month, day, prcp (precipitation (mm)), snow (snowfall (mm)), snwd (snow depth (mm)), tmax (maximum temperature (degrees Celcius)), and tmin (minimum temperature (degrees Celcius)). The original dataset contains `r nrow(ny_noaa)` observations, and `r nrow(ny_noaa) - nrow(nycweather_df)` , Observations with missing data were removed from the original dataset. 
 
 2. Make a two-panel plot showing the average max temperature in January and in July in each station across years. Is there any observable / interpretable structure? Any outliers?
 
