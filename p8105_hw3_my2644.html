@@ -529,15 +529,214 @@ pivot_longer(activity_1:activity_1440,
            day  %in% c(&quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, &quot;Thursday&quot;, &quot;Friday&quot;) ~ &quot;Weekdays&quot;,
           day  %in% c(&quot;Saturday&quot;, &quot;Sunday&quot;) ~ &quot;Weekend&quot;)) %&gt;% 
 
- knitr::kable()</code></pre>
+select(week, day_id, day_of_wk = day, everything())</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   .default = col_double(),
 ##   day = col_character()
 ## )</code></pre>
 <pre><code>## See spec(...) for full column specifications.</code></pre>
-<p>The dataframe accel_df contains observations and columns. Variables include week, day_id, day, min_of_day, activity_count, and weekdays_vs_weekend.</p>
-<p>Aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals.</p>
+<p>The dataframe accel_df contains 50400 observations and 6 columns. Variables include week, day_id, day, min_of_day, activity_count, and weekdays_vs_weekend.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?</li>
+</ol>
+<pre class="r"><code>accel_df %&gt;%   
+
+  mutate(day_of_wk = forcats::fct_relevel(day_of_wk, c(&quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, &quot;Thursday&quot;, &quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;))) %&gt;% 
+    
+  group_by(week, day_of_wk) %&gt;%
+  summarise(total_daily_activity = sum(activity_count)) %&gt;%
+  knitr::kable()</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;week&#39; (override with `.groups` argument)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">week</th>
+<th align="left">day_of_wk</th>
+<th align="right">total_daily_activity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">Monday</td>
+<td align="right">78828.07</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">Tuesday</td>
+<td align="right">307094.24</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">Wednesday</td>
+<td align="right">340115.01</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">Thursday</td>
+<td align="right">355923.64</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">Friday</td>
+<td align="right">480542.62</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">Saturday</td>
+<td align="right">376254.00</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">Sunday</td>
+<td align="right">631105.00</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">Monday</td>
+<td align="right">295431.00</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="left">Tuesday</td>
+<td align="right">423245.00</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">Wednesday</td>
+<td align="right">440962.00</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="left">Thursday</td>
+<td align="right">474048.00</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">Friday</td>
+<td align="right">568839.00</td>
+</tr>
+<tr class="odd">
+<td align="right">2</td>
+<td align="left">Saturday</td>
+<td align="right">607175.00</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">Sunday</td>
+<td align="right">422018.00</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">Monday</td>
+<td align="right">685910.00</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="left">Tuesday</td>
+<td align="right">381507.00</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">Wednesday</td>
+<td align="right">468869.00</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="left">Thursday</td>
+<td align="right">371230.00</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">Friday</td>
+<td align="right">467420.00</td>
+</tr>
+<tr class="even">
+<td align="right">3</td>
+<td align="left">Saturday</td>
+<td align="right">382928.00</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">Sunday</td>
+<td align="right">467052.00</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">Monday</td>
+<td align="right">409450.00</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="left">Tuesday</td>
+<td align="right">319568.00</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">Wednesday</td>
+<td align="right">434460.00</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="left">Thursday</td>
+<td align="right">340291.00</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">Friday</td>
+<td align="right">154049.00</td>
+</tr>
+<tr class="odd">
+<td align="right">4</td>
+<td align="left">Saturday</td>
+<td align="right">1440.00</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">Sunday</td>
+<td align="right">260617.00</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">Monday</td>
+<td align="right">389080.00</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="left">Tuesday</td>
+<td align="right">367824.00</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">Wednesday</td>
+<td align="right">445366.00</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="left">Thursday</td>
+<td align="right">549658.00</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">Friday</td>
+<td align="right">620860.00</td>
+</tr>
+<tr class="even">
+<td align="right">5</td>
+<td align="left">Saturday</td>
+<td align="right">1440.00</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">Sunday</td>
+<td align="right">138421.00</td>
+</tr>
+</tbody>
+</table>
+<ol start="3" style="list-style-type: decimal">
+<li>Accelerometer data allows the inspection activity over the course of the day. Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.</li>
+</ol>
 </div>
 
 

@@ -94,9 +94,9 @@ instacart %>%
 1. Load, tidy, and otherwise wrangle the data. Your final dataset should include all originally observed variables and values; have useful variable names; include a weekday vs weekend variable; and encode data with reasonable variable classes. Describe the resulting dataset (e.g. what variables exist, how many observations, etc).
 
 ```{r}
-accel_df=read_csv("./data/accel_data.csv") %>% 
-janitor::clean_names() %>%
- 
+accel_df = read_csv("./data/accel_data.csv") %>% 
+janitor::clean_names() %>% 
+
 pivot_longer(activity_1:activity_1440,
              names_to = "min_of_day",
              names_prefix = "activity_",
@@ -115,10 +115,41 @@ pivot_longer(activity_1:activity_1440,
            day  %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday") ~ "Weekdays",
           day  %in% c("Saturday", "Sunday") ~ "Weekend")) %>% 
 
- knitr::kable()
+  select(week, weekdays_vs_weekend, day_id, day_of_wk=day,everything()) %>% 
+
+   
+
+
+
+
 ```
 The dataframe accel_df contains `r nrow(accel_df)` observations and `r ncol(accel_df)` columns. Variables include week, day_id, day, min_of_day, activity_count, and weekdays_vs_weekend.
 
-Aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals.
+2. Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate accross minutes to create a total activity variable for each day, and create a table showing these totals. Are any trends apparent?
+```{r}
+accel_df %>%  
+ mutate(day_of_wk = forcats::fct_relevel(day_of_wk, c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))) %>% 
+    
+  group_by(week, day_of_wk, weekdays_vs_weekend) %>%
+  summarise(total_daily_activity = sum(activity_count)) %>%
 
+  knitr::kable()
+```
+
+After summing up the minutes of total activity for each day of the week, we can notice that this subject has more activities on Friday , Saturday and Sunday compared to other days in the week. Very low activities are observed on saturdays of week 4 and 5.
+
+
+3. Accelerometer data allows the inspection activity over the course of the day. Make a single-panel plot that shows the 24-hour activity time courses for each day and use color to indicate day of the week. Describe in words any patterns or conclusions you can make based on this graph.
+
+```{r}
+accel_df %>%   
+  ggplot(aes(x = min_of_day, y = activity_count, color = day_of_wk)) + 
+  geom_smooth(se = FALSE) + 
+  theme(legend.position = "bottom") +
+  labs(
+    title = "Activity in the day ",
+    caption = "Accelerometer Data collected on a 63 year-old male with BMI 25, who was admitted to the Advanced Cardiac Care Center of Columbia University Medical Center and diagnosed with congestive heart failure (CHF), during a five weeks of observation period. "
+  )
+```
+From the plot we can notice that the male study object has more activities at noon and night during each day of the week, especially on the Friday and Sunday. During weekdays the activity counts are more stable throughout the day. Activity counts are lower during the Saturdays of each week
 
