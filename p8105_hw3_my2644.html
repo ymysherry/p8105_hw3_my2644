@@ -1006,7 +1006,7 @@ skimr::skim(nycweather_df)</code></pre>
 </tr>
 </tbody>
 </table>
-<p>This dataset cellects the data of weather conditions from all monitoning stations in NY, during January 1, 1981 through December 31, 2010. It contains 1222433 rows and 9 columns. There are 9 Variables, which include year, month, day, prcp (precipitation (mm)), snow (snowfall (mm)), snwd (snow depth (mm)), tmax (maximum temperature (degrees Celcius)), and tmin (minimum temperature (degrees Celcius)). The original dataset contains 2595176 observations, and 1372743 , Observations with missing data were removed from the original dataset.</p>
+<p>This dataset collects the data of weather conditions from all monitoning stations in NY, during January 1, 1981 through December 31, 2010. It contains 1222433 rows and 9 columns. There are 9 Variables, which include year, month, day, prcp (precipitation (mm)), snow (snowfall (mm)), snwd (snow depth (mm)), tmax (maximum temperature (degrees Celcius)), and tmin (minimum temperature (degrees Celcius)). The original dataset contains 2595176 observations, and 1372743 , Observations with missing data were removed from the original dataset.</p>
 <pre class="r"><code>nycweather_df %&gt;%
   count(snow) %&gt;%
   arrange(desc(n))</code></pre>
@@ -1129,6 +1129,33 @@ skimr::skim(nycweather_df)</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li>Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.</li>
 </ol>
+<pre class="r"><code>t_maxmin_p = 
+  nycweather_df %&gt;%
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_bin2d() +
+  labs(
+    title = &quot;tmax vs tmin&quot;,
+    caption = &quot;Data retrieved from the ny_noaa dataset from all  monitoning stations in NY, during January 1, 1981 through December 31, 2010.&quot;
+  )
+ggsave(&quot;t_maxmin_plot.pdf&quot;, t_maxmin_p, width = 8, height = 5)
+
+snowfall_p = 
+  nycweather_df %&gt;%
+  filter(snow &gt; 0 &amp; snow &lt; 100) %&gt;%
+  ggplot(aes(x = year, y = snow)) +
+  geom_boxplot() +  
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  labs(
+  title = &quot;Snowfall Distribution&quot;,
+  caption = &quot;Data from the ny_noaa dataset from all  monitoning stations in NY, during January 1, 1981 through December 31, 2010.&quot;
+  )
+ggsave(&quot;snowfall.pdf&quot;, snowfall_p, width = 8, height = 5)</code></pre>
+<pre><code>## Warning: Continuous x aesthetic -- did you forget aes(group=...)?</code></pre>
+<pre class="r"><code>knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = &quot;90%&quot;
+)</code></pre>
 </div>
 
 

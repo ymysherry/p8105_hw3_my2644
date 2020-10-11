@@ -187,10 +187,29 @@ nycweather_df =
 skimr::skim(nycweather_df)
 ```
 This dataset cellects the data of weather conditions from all  monitoning stations in NY, during January 1, 1981 through December 31, 2010.  It contains `r nrow(nycweather_df)` rows and `r ncol(nycweather_df)` columns. There are 9 Variables, which include year, month, day, prcp (precipitation (mm)), snow (snowfall (mm)), snwd (snow depth (mm)), tmax (maximum temperature (degrees Celcius)), and tmin (minimum temperature (degrees Celcius)). The original dataset contains `r nrow(ny_noaa)` observations, and `r nrow(ny_noaa) - nrow(nycweather_df)` , Observations with missing data were removed from the original dataset. 
+```{r}
+nycweather_df %>%
+  count(snow) %>%
+  arrange(desc(n))
+```
+For snowfall, 0mm,25mm and 13mm are the three most commonly observed values, since snowfall is only occurring in winter during the year.
 
 2. Make a two-panel plot showing the average max temperature in January and in July in each station across years. Is there any observable / interpretable structure? Any outliers?
 
+```{r}
+nycweather_df %>%
+  filter(month %in% c("January", "July")) %>%
+  group_by(month, id, year) %>%
+  summarise(n = mean(tmax)) %>%
 
+  ggplot(aes(x = year, y = n, group = id)) +
+  geom_point() + 
+  facet_grid(. ~ month) +
+  geom_smooth(se = FALSE) + 
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1)) +
+  labs(y = "Average maximum temperature (degree Celcius)")
+```
+The average maximum temperature in July is significantly higher than that in January across years. The distribution of max temperature is larger in January than in July, with more outliers of extremely low tempetaure arouud -10 to -15 degrees. In comparison, July has 1 outlier in the lower range around 15 degrees.
 
 
 3. Make a two-panel plot showing (i) tmax vs tmin for the full dataset (note that a scatterplot may not be the best option); and (ii) make a plot showing the distribution of snowfall values greater than 0 and less than 100 separately by year.
